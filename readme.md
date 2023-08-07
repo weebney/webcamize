@@ -38,9 +38,7 @@ webcamize: Starting camera on /dev/video0
 </div>
 <br>
 
-... et Voilà! Webcamize is a tiny bash script that coordinates [gphoto2](http://gphoto.org/) and [ffmpeg](https://www.ffmpeg.org/) to capture video from any camera and output it to a live video device, ready to be used as a webcam.
-
-To put it overly simply, gphoto2 and ffmpeg are bilingual; gphoto knows how to talk to cameras, and ffmpeg is fluent in almost dialect of video. Speaking only a rare dialect of video, gphoto2 can't communicate with everyone else. Good thing ffmpeg is fluent in that dialect too, though—gphoto2 can tell ffmpeg what's going on with the camera and ffmpeg can translate it into a dialect that everyone else understands.
+... et Voilà! Webcamize is a tiny bash script that coordinates [gphoto2](http://gphoto.org/) and [ffmpeg](https://www.ffmpeg.org/) to capture video from any camera and output it to a live video device, ready to be used as a webcam. Whether it's for a Zoom meeting, a live streaming event, or a virtual conference, webcamize bridges the gap between high-end photography equipment and everyday tech usability. 
 
 <!-- -->
 
