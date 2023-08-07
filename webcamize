@@ -1,0 +1,179 @@
+#!/bin/bash
+# Created by weebney in 2023
+# Licensed BSD-2-Clause
+
+version="1.1.1"
+
+camera=""
+deviceNumber=0
+gphotoArgs=(autofocusdrive=1)
+ffmpegArgs=(-vcodec rawvideo -pix_fmt yuv420p -threads 0)
+gtemp=$(mktemp)
+fftemp=$(mktemp)
+
+# Trap
+cleanup() {
+	if [ ! -z "$pipeline_pid" ] && kill -0 "$pipeline_pid" >/dev/null; then
+		kill "$pipeline_pid" >/dev/null
+	fi
+	rm -f "$gtemp" "$fftemp" "$sudotemp"
+}
+trap cleanup EXIT
+
+usage() {
+	printf "Usage: $0 [OPTIONS...]\n"
+	printf "	-v, --version			Print version info and quit\n"
+	printf "	-c, --camera NAME		Specify a gphoto2 camera to use; autodetects by default\n"
+	printf "	-d, --device NUMBER		Specify the /dev/video device number to use (default: ${deviceNumber})\n"
+	printf "	-g, --gphoto-args ARGS		Pass arguments to gphoto2 (default: \"${gphotoArgs}\")\n"
+	printf "	-f, --ffmpeg-args ARGS		Pass arguments to ffmpeg (default: \"${ffmpegArgs}\")\n"
+	printf "	-h, --help			Show this help message\n"
+}
+
+# Command line options
+missing_arg() {
+	echo "$0: Argument for $1 is missing" >&2
+	exit 1
+}
+while (("$#")); do
+	case "$1" in
+	-v | --version)
+		printf "$0: ${version}\n"
+		exit
+		;;
+	-d | --device)
+		if [ -n "$2" ]; then
+			# Validate input
+			if ! [[ "$2" =~ ^[0-9]+$ ]] || (("$2" < 0)); then
+				echo "$0: Argument for $1 must be a non-negative integer" >&2
+				exit 1
+			fi
+			deviceNumber=$2
+			shift 2
+		else
+			missing_arg "$1"
+		fi
+		;;
+	-c | --camera)
+		if [ -n "$2" ]; then
+			camera="--camera \"$2\""
+			shift 2
+		else
+			missing_arg "$1"
+		fi
+		;;
+	-g | --gphoto-args)
+		if [ -n "$2" ]; then
+			gphotoArgs=($2)
+			shift 2
+		else
+			missing_arg "$1"
+		fi
+		;;
+	-f | --ffmpeg-args)
+		if [ -n "$2" ]; then
+			ffmpegArgs=($2)
+			shift 2
+		else
+			missing_arg "$1"
+		fi
+		;;
+	-h | --help)
+		usage
+		exit
+		;;
+	--)
+		shift
+		break
+		;;
+	-*)
+		echo "$0: Unsupported flag $1" >&2
+		exit 1
+		;;
+	*)
+		shift
+		;;
+	esac
+done
+
+# Verify dependencies
+for cmd in gphoto2 ffmpeg sudo pgrep; do
+	if ! command -v $cmd &>/dev/null; then
+		echo "$0: $cmd command could not be found" >&2
+		exit 1
+	fi
+done
+
+# Verify that gphoto2 is working
+autodetect=$(gphoto2 --auto-detect | awk 'NR==3' | grep -oP '.*?(?=\ {6,})')
+if [ -z "${autodetect}" ]; then
+	echo "$0: gphoto2 didn't detect any cameras" >&2
+	exit 1
+fi
+
+# Set camera name
+if [ -z "${camera}" ]; then
+	cameraName="${autodetect}"
+else
+	cameraName=$(echo ${camera} | sed 's/^[^ ]* //')
+fi
+
+# Verify that the v4l2loopback module is installed
+if ! modinfo v4l2loopback &>/dev/null; then
+	printf "$0: v4l2loopback module not found\n" >&2
+	exit 1
+fi
+
+# Verify that the loopback device exists
+if [ ! -e /dev/video"${deviceNumber}" ]; then
+	printf "$0: /dev/video${deviceNumber} does not exist.\n" >&2
+	printf "$0: Attempting to add virtual camera device via modprobe.\n"
+
+	(sudo modprobe v4l2loopback video_nr="${deviceNumber}" card_label="virtual")
+	if [ $? -ne 0 ]; then
+		echo "$0: Error loading v4l2loopback module" >&2
+		exit 1
+	fi
+
+	# Double check that we actually created the device
+	if [ ! -e /dev/video"${deviceNumber}" ]; then
+		echo "$0: /dev/video${deviceNumber} was not created" >&2
+		exit 1
+	else
+		echo "$0: /dev/video${deviceNumber} created successfully"
+	fi
+fi
+
+printf "$0: Starting ${cameraName} on /dev/video${deviceNumber}\n"
+
+# Main execution below
+(gphoto2 "${gphotoArgs[@]}" --capture-movie --stdout 2>"$gtemp" | ffmpeg -i - "${ffmpegArgs[@]}" -f v4l2 /dev/video"${deviceNumber}" >/dev/null 2>"$fftemp") &
+pipeline_pid=$!
+
+sleep 1 # Allow some time for the processes to start
+if pgrep -x "gphoto2" >/dev/null && pgrep -x "ffmpeg" >/dev/null; then
+	printf "$0: Successfully started!\n"
+fi
+
+wait $pipeline_pid
+pipeline_status=$?
+
+if [ $pipeline_status -ne 0 ]; then
+	echo "$0: Error executing gphoto2/ffmpeg" >&2
+	if [ -s $(echo "$gtemp" | sed 's/\(abort.\).*$/\1/')]; then
+		printf "\ngphoto2: " >&2
+		cat "$gtemp" >&2
+	fi
+	if [ -s "$fftemp" ]; then
+		printf "\nffmpeg: " >&2
+		cat "$fftemp" >&2
+	fi
+fi
+
+while true; do
+	if ! kill -0 "$pipeline_pid" 2>/dev/null; then
+		kill "$pipeline_pid" 2>/dev/null || true
+		exit 1
+	fi
+	sleep 1
+done
