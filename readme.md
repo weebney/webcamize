@@ -82,8 +82,6 @@ Created symlink /etc/systemd/system/multi-user.target.wants/webcamize.service â†
 
 Webcamize should now run in the background automatically when you start up your PC.
 
------
-
 ### Advanced Usage
 
 ```console
