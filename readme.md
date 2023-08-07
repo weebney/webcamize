@@ -107,7 +107,7 @@ Once you know the name of the camera you want to use, just pass it to the `--cam
 
 ```console
 $ webcamize --camera "Sony Alpha-A7r III"
-webcamize: Starting camera on /dev/video0
+webcamize: Starting Sony Alpha-A7r III on /dev/video0
 ```
 
 
@@ -126,9 +126,9 @@ Alright mister show biz, here's how you can do a multiple camera setup; just cha
 
 ```console
 $ webcamize --device 4 --camera "Canon EOS 80D" &
-webcamize: Starting camera on /dev/video4
+webcamize: Starting Canon EOS 80D on /dev/video4
 $ webcamize --device 3 --camera "Sony Alpha-A7r III" &
-webcamize: Starting camera on /dev/video3
+webcamize: Starting Sony Alpha-A7r III on /dev/video3
 ```
 
 #### Custom Arguments for gphoto2/ffmpeg
