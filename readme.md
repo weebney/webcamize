@@ -14,7 +14,7 @@
 </samp>
 </strong> -->
 
-<img alt="Awesomeness badge" src="https://img.shields.io/badge/video-lots-limegreen?style=flat-square">
+<img alt="Awesomeness badge" src="https://img.shields.io/badge/video-lots-orchid?style=flat-square">
 <img alt="License" src="https://img.shields.io/github/license/weebney/webcamize?style=flat-square">
 <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/weebney/webcamize?style=flat-square">
 
