@@ -16,7 +16,7 @@ cleanup() {
 	if [ ! -z "$pipeline_pid" ] && kill -0 "$pipeline_pid" >/dev/null; then
 		kill "$pipeline_pid" >/dev/null
 	fi
-	rm -f "$gtemp" "$fftemp" "$sudotemp"
+	rm -f "$gtemp" "$fftemp"
 }
 trap cleanup EXIT
 
@@ -115,7 +115,7 @@ fi
 if [ -z "${camera}" ]; then
 	cameraName="${autodetect}"
 else
-	cameraName=$(echo ${camera} | sed 's/^[^ ]* //')
+	cameraName=$(echo "${camera}" | sed 's/^[^ ]* //')
 fi
 
 # Verify that the v4l2loopback module is installed
@@ -160,7 +160,7 @@ pipeline_status=$?
 
 if [ $pipeline_status -ne 0 ]; then
 	echo "$0: Error executing gphoto2/ffmpeg" >&2
-	if [ -s $(echo "$gtemp" | sed 's/\(abort.\).*$/\1/')]; then
+	if [ -s $(echo "$gtemp" | sed 's/\(abort.\).*$/\1/') ]; then
 		printf "\ngphoto2: " >&2
 		cat "$gtemp" >&2
 	fi

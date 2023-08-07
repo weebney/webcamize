@@ -14,7 +14,7 @@
 </samp>
 </strong> -->
 
-<img alt="Awesomeness badge" src="https://img.shields.io/badge/video-lots-limegreen?style=flat-square">
+<img alt="Awesomeness badge" src="https://img.shields.io/badge/video-lots-orchid?style=flat-square">
 <img alt="License" src="https://img.shields.io/github/license/weebney/webcamize?style=flat-square">
 <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/weebney/webcamize?style=flat-square">
 
@@ -38,9 +38,7 @@ webcamize: Starting camera on /dev/video0
 </div>
 <br>
 
-... et Voilà! Webcamize is a tiny bash script that coordinates [gphoto2](http://gphoto.org/) and [ffmpeg](https://www.ffmpeg.org/) to capture video from any camera and output it to a live video device, ready to be used as a webcam.
-
-To put it overly simply, gphoto2 and ffmpeg are bilingual; gphoto knows how to talk to cameras, and ffmpeg is fluent in almost dialect of video. Speaking only a rare dialect of video, gphoto2 can't communicate with everyone else. Good thing ffmpeg is fluent in that dialect too, though—gphoto2 can tell ffmpeg what's going on with the camera and ffmpeg can translate it into a dialect that everyone else understands.
+... et Voilà! Webcamize is a tiny bash script that coordinates [gphoto2](http://gphoto.org/) and [ffmpeg](https://www.ffmpeg.org/) to capture video from any camera and output it to a live video device, ready to be used as a webcam. Whether it's for a Zoom meeting, a live streaming event, or a virtual conference, webcamize bridges the gap between high-end photography equipment and everyday tech usability. 
 
 <!-- -->
 
@@ -82,8 +80,6 @@ Created symlink /etc/systemd/system/multi-user.target.wants/webcamize.service �
 
 Webcamize should now run in the background automatically when you start up your PC.
 
------
-
 ### Advanced Usage
 
 ```console
@@ -111,7 +107,7 @@ Once you know the name of the camera you want to use, just pass it to the `--cam
 
 ```console
 $ webcamize --camera "Sony Alpha-A7r III"
-webcamize: Starting camera on /dev/video0
+webcamize: Starting Sony Alpha-A7r III on /dev/video0
 ```
 
 
@@ -130,9 +126,9 @@ Alright mister show biz, here's how you can do a multiple camera setup; just cha
 
 ```console
 $ webcamize --device 4 --camera "Canon EOS 80D" &
-webcamize: Starting camera on /dev/video4
+webcamize: Starting Canon EOS 80D on /dev/video4
 $ webcamize --device 3 --camera "Sony Alpha-A7r III" &
-webcamize: Starting camera on /dev/video3
+webcamize: Starting Sony Alpha-A7r III on /dev/video3
 ```
 
 #### Custom Arguments for gphoto2/ffmpeg
