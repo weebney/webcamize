@@ -13,10 +13,10 @@ fftemp=$(mktemp)
 
 # Trap
 cleanup() {
-	if [ ! -z "$pipeline_pid" ] && kill -0 "$pipeline_pid" >/dev/null; then
-		kill "$pipeline_pid" >/dev/null
+	if [ -n "$pipeline_pid" ] && kill -0 "$pipeline_pid" &>/dev/null ; then
+		kill "$pipeline_pid" &>/dev/null
 	fi
-	rm -f "$gtemp" "$fftemp"
+	rm -f "$gtemp" "$fftemp" &>/dev/null
 }
 trap cleanup EXIT
 
@@ -64,7 +64,7 @@ while (("$#")); do
 		;;
 	-g | --gphoto-args)
 		if [ -n "$2" ]; then
-			gphotoArgs=($2)
+			gphotoArgs=("$2")
 			shift 2
 		else
 			missing_arg "$1"
@@ -72,7 +72,7 @@ while (("$#")); do
 		;;
 	-f | --ffmpeg-args)
 		if [ -n "$2" ]; then
-			ffmpegArgs=($2)
+			ffmpegArgs=("$2")
 			shift 2
 		else
 			missing_arg "$1"
@@ -115,7 +115,7 @@ fi
 if [ -z "${camera}" ]; then
 	cameraName="${autodetect}"
 else
-	cameraName=$(echo "${camera}" | sed 's/^[^ ]* //')
+	cameraName=${camera#* }
 fi
 
 # Verify that the v4l2loopback module is installed
@@ -151,7 +151,7 @@ printf "webcamize: Starting ${cameraName} on /dev/video${deviceNumber}\n"
 pipeline_pid=$!
 
 sleep 1 # Allow some time for the processes to start
-if pgrep -x "gphoto2" >/dev/null && pgrep -x "ffmpeg" >/dev/null; then
+if pgrep -x "gphoto2" &>/dev/null && pgrep -x "ffmpeg" &>/dev/null; then
 	printf "webcamize: Successfully started!\n"
 fi
 
@@ -160,7 +160,7 @@ pipeline_status=$?
 
 if [ $pipeline_status -ne 0 ]; then
 	echo "webcamize: Error executing gphoto2/ffmpeg" >&2
-	if [ -s $(echo "$gtemp" | sed 's/\(abort.\).*$/\1/') ]; then
+	if [ -s "$gtemp" ]; then
 		printf "\ngphoto2: " >&2
 		cat "$gtemp" >&2
 	fi
@@ -171,8 +171,8 @@ if [ $pipeline_status -ne 0 ]; then
 fi
 
 while true; do
-	if ! kill -0 "$pipeline_pid" 2>/dev/null; then
-		kill "$pipeline_pid" 2>/dev/null || true
+	if ! kill -0 "$pipeline_pid" &>/dev/null; then
+		kill "$pipeline_pid" &>/dev/null || true
 		exit 1
 	fi
 	sleep 1
