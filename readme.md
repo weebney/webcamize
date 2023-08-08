@@ -71,7 +71,7 @@ In the vast majority of cases, that's all you'll need to do. You might be asked 
 First, [install webcamize](#installation)! Then, you can make webcamize run by default on startup with a systemd unit file included in this repository. Start by downloading the unit file into your unit files folder:
 
 ```console
-$ curl -sSo /etc/systemd/system/webcamize.service https://raw.githubusercontent.com/weebney/webcamize/v1.1.1/webcamize.service > /dev/null && echo 'Successfully downloaded!'
+$ curl -sSo /etc/systemd/system/webcamize.service https://raw.githubusercontent.com/weebney/webcamize/v1.1.2/webcamize.service > /dev/null && echo 'Successfully downloaded!'
 Successfully downloaded!
 ```
 
@@ -172,7 +172,7 @@ Webcamize is super easy to install—it only has a few additional dependencies t
 To get started, download the script to `/usr/local/bin/` (or somewhere else on your `$PATH`)
 
 ```console
-$ curl -sSo /usr/local/bin/webcamize https://raw.githubusercontent.com/weebney/webcamize/v1.1.1/webcamize > /dev/null && echo 'Successfully downloaded!'
+$ curl -sSo /usr/local/bin/webcamize https://raw.githubusercontent.com/weebney/webcamize/v1.1.2/webcamize > /dev/null && echo 'Successfully downloaded!'
 Successfully downloaded!
 ```
 
@@ -183,17 +183,19 @@ $ chmod a+x -v /usr/local/bin/webcamize
 mode of '/usr/local/bin/webcamize' changed from 0644 (rw-r--r--) to 0755 (rwxr-xr-x)
 ```
 
-That's all; you're ready to go! Give it a quick test just to make sure it's working:
+**That's all; you're ready to go!** 🎉🎉
+
+Give it a quick test just to make sure it's working:
 
 ```console
 $ webcamize -v
-webcamize: 1.1.1
+webcamize: 1.1.2
 ```
 
 ... and here's everything again as a one-liner to reward those patient few who read all the way through the instructions before starting!
 
 ```console
-$ sudo bash -c "curl -sSo /usr/local/bin/webcamize https://raw.githubusercontent.com/weebney/webcamize/v1.1.1/webcamize && chmod a+x /usr/local/bin/webcamize" && echo -e '\n\e[32mSuccessfully installed webcamize!\e[0m'
+$ sudo bash -c "curl -sSo /usr/local/bin/webcamize https://raw.githubusercontent.com/weebney/webcamize/v1.1.2/webcamize && chmod a+x /usr/local/bin/webcamize" && echo -e '\n\e[32mSuccessfully installed webcamize!\e[0m'
 Successfully installed webcamize!
 ```
 <!--
@@ -255,7 +257,7 @@ Webcamize has only a few contribution rules to keep the project's growing at a s
 This is just a little script I cooked up one afternoon—the software it depends on is where the real magic happens. I know it can be corny, but I do feel it's important that we remind ourselves that we stand on the shoulders of giants. With that being said, a big thanks goes out from me to:
 
 - [Michael Niedermayer](https://github.com/michaelni) and all other contributors to [ffmpeg](https://github.com/FFmpeg/FFmpeg/graphs/contributors) for their incredible work on the absolute behemoth and marvel of software that is ffmpeg.
-- [Marcus Meissner](https://github.com/msmeissn),  [Hans Niedermann](https://github.com/ndim), and the other contributors to [gphoto2](https://github.com/gphoto/gphoto2) and [libgphoto2](https://github.com/gphoto/libgphoto2). This project is small and obscure, but hugely powerful and extremely well constructed.
+- [Marcus Meissner](https://github.com/msmeissn),  [Hans Niedermann](https://github.com/ndim), and the other contributors to [gphoto2](https://github.com/gphoto/gphoto2) and [libgphoto2](https://github.com/gphoto/libgphoto2). This project is pretty small and obscure compared to how powerful and well constructed it is. Definitely check it out!
 - [You](https://en.wikipedia.org/wiki/You_(Time_Person_of_the_Year)), the reader! Thank you for using, supporting, and contributing to webcamize; without you, this project would not be possible.
 
 <br>
