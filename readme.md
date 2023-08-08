@@ -25,20 +25,24 @@
 </div>
 
 Webcamize allows you to use [basically any camera](http://www.gphoto.org/proj/libgphoto2/support.php) as a webcam on Linux—your DSLR, mirrorless, camcorder, point-and-shoot, or even your smartphone/tablet. It also gets many webcams that don't work out of the box on Linux up and running in a flash.
-
-All it takes is one command:
-
-```console
-$ webcamize
-webcamize: Starting camera on /dev/video0
-```
+<div align="center" width="33%">
 <br>
-<div align="center">
+
 <img src="./assets/demo.gif" style="width:75%;">
 </div>
 <br>
+<div align="center" width="33%">
 
-... et Voilà! Webcamize is a tiny bash script that coordinates [gphoto2](http://gphoto.org/) and [ffmpeg](https://www.ffmpeg.org/) to capture video from any camera and output it to a live video device, ready to be used as a webcam. Whether it's for a Zoom meeting, a live streaming event, or a virtual conference, webcamize bridges the gap between high-end photography equipment and everyday tech usability. 
+There's literally only three steps...
+
+**1​. Plug in some camera**
+
+**2​. Run the `webcamize` command**
+
+**3​. Now your camera is a webcam!**
+</div>
+
+It's really that easy! Webcamize is a tiny bash script that coordinates [gphoto2](http://gphoto.org/) and [ffmpeg](https://www.ffmpeg.org/) to capture video from any camera and output it to a live video device, ready to be used as a webcam. Whether it's for a Zoom meeting, a live streaming event, or a virtual conference, webcamize bridges the gap between high-end photography equipment and everyday tech usability. 
 
 <!-- -->
 
@@ -53,16 +57,16 @@ webcamize: Starting camera on /dev/video0
 
 <br>
 
-Webcamize is designed to be as easy to use as possible:
+Webcamize is designed to be as easy to use as possible. Just plug in your camera, then run the script:
 
 ```console
 $ webcamize
 webcamize: Starting camera on /dev/video0
 ```
 
-In the vast majority of cases, that's all you'll need to do. You might be asked to enter your password for `modprobe` to enable the virtual loopback device.
+In the vast majority of cases, that's all you'll need to do. You might be asked to enter your password for `modprobe` to enable the video device.
 
-### Enabling Webcamize by Default
+### Enabling Webcamize on Startup
 
 First, [install webcamize](#installation)! Then, you can make webcamize run by default on startup with a systemd unit file included in this repository. Start by downloading the unit file into your unit files folder:
 
