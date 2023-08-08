@@ -2,7 +2,7 @@
 # Created by weebney in 2023
 # Licensed BSD-2-Clause
 
-version="1.1.1"
+version="1.1.2"
 
 camera=""
 deviceNumber=0
@@ -32,20 +32,20 @@ usage() {
 
 # Command line options
 missing_arg() {
-	echo "$0: Argument for $1 is missing" >&2
+	echo "webcamize: Argument for $1 is missing" >&2
 	exit 1
 }
 while (("$#")); do
 	case "$1" in
 	-v | --version)
-		printf "$0: ${version}\n"
+		printf "webcamize: ${version}\n"
 		exit
 		;;
 	-d | --device)
 		if [ -n "$2" ]; then
 			# Validate input
 			if ! [[ "$2" =~ ^[0-9]+$ ]] || (("$2" < 0)); then
-				echo "$0: Argument for $1 must be a non-negative integer" >&2
+				echo "webcamize: Argument for $1 must be a non-negative integer" >&2
 				exit 1
 			fi
 			deviceNumber=$2
@@ -87,7 +87,7 @@ while (("$#")); do
 		break
 		;;
 	-*)
-		echo "$0: Unsupported flag $1" >&2
+		echo "webcamize: Unsupported flag $1" >&2
 		exit 1
 		;;
 	*)
@@ -99,15 +99,15 @@ done
 # Verify dependencies
 for cmd in gphoto2 ffmpeg sudo pgrep; do
 	if ! command -v $cmd &>/dev/null; then
-		echo "$0: $cmd command could not be found" >&2
+		echo "webcamize: $cmd command could not be found" >&2
 		exit 1
 	fi
 done
 
 # Verify that gphoto2 is working
-autodetect=$(gphoto2 --auto-detect | awk 'NR==3' | grep -oP '.*?(?=\ {6,})')
+autodetect=$(gphoto2 --auto-detect | awk 'NR==3' | sed 's/  .*//')
 if [ -z "${autodetect}" ]; then
-	echo "$0: gphoto2 didn't detect any cameras" >&2
+	echo "webcamize: gphoto2 didn't detect any cameras" >&2
 	exit 1
 fi
 
@@ -120,31 +120,31 @@ fi
 
 # Verify that the v4l2loopback module is installed
 if ! modinfo v4l2loopback &>/dev/null; then
-	printf "$0: v4l2loopback module not found\n" >&2
+	printf "webcamize: v4l2loopback module not found\n" >&2
 	exit 1
 fi
 
 # Verify that the loopback device exists
 if [ ! -e /dev/video"${deviceNumber}" ]; then
-	printf "$0: /dev/video${deviceNumber} does not exist.\n" >&2
-	printf "$0: Attempting to add virtual camera device via modprobe.\n"
+	printf "webcamize: /dev/video${deviceNumber} does not exist.\n" >&2
+	printf "webcamize: Attempting to add virtual camera device via modprobe.\n"
 
 	(sudo modprobe v4l2loopback video_nr="${deviceNumber}" card_label="virtual")
 	if [ $? -ne 0 ]; then
-		echo "$0: Error loading v4l2loopback module" >&2
+		echo "webcamize: Error loading v4l2loopback module" >&2
 		exit 1
 	fi
 
 	# Double check that we actually created the device
 	if [ ! -e /dev/video"${deviceNumber}" ]; then
-		echo "$0: /dev/video${deviceNumber} was not created" >&2
+		echo "webcamize: /dev/video${deviceNumber} was not created" >&2
 		exit 1
 	else
-		echo "$0: /dev/video${deviceNumber} created successfully"
+		echo "webcamize: /dev/video${deviceNumber} created successfully"
 	fi
 fi
 
-printf "$0: Starting ${cameraName} on /dev/video${deviceNumber}\n"
+printf "webcamize: Starting ${cameraName} on /dev/video${deviceNumber}\n"
 
 # Main execution below
 (gphoto2 "${gphotoArgs[@]}" --capture-movie --stdout 2>"$gtemp" | ffmpeg -i - "${ffmpegArgs[@]}" -f v4l2 /dev/video"${deviceNumber}" >/dev/null 2>"$fftemp") &
@@ -152,14 +152,14 @@ pipeline_pid=$!
 
 sleep 1 # Allow some time for the processes to start
 if pgrep -x "gphoto2" >/dev/null && pgrep -x "ffmpeg" >/dev/null; then
-	printf "$0: Successfully started!\n"
+	printf "webcamize: Successfully started!\n"
 fi
 
 wait $pipeline_pid
 pipeline_status=$?
 
 if [ $pipeline_status -ne 0 ]; then
-	echo "$0: Error executing gphoto2/ffmpeg" >&2
+	echo "webcamize: Error executing gphoto2/ffmpeg" >&2
 	if [ -s $(echo "$gtemp" | sed 's/\(abort.\).*$/\1/') ]; then
 		printf "\ngphoto2: " >&2
 		cat "$gtemp" >&2
