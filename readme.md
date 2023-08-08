@@ -24,7 +24,8 @@
 <br>
 </div>
 
-Webcamize allows you to use [basically any camera](http://www.gphoto.org/proj/libgphoto2/support.php) as a webcam on Linux—your DSLR, mirrorless, camcorder, point-and-shoot, or even your smartphone/tablet. It also gets many webcams that don't work out of the box on Linux up and running in a flash.
+Webcamize allows you to use [basically any modern camera](./assets/supported.md) as a webcam on Linux—your DSLR, mirrorless, camcorder, point-and-shoot, and even some smartphones/tablets. It also gets many webcams that don't work out of the box on Linux up and running in a flash.
+
 <div align="center" width="33%">
 <br>
 
@@ -161,26 +162,25 @@ Webcamize is super easy to install—it only has a few additional dependencies t
 
 - [gphoto2](http://gphoto.org/)
 - [ffmpeg](https://www.ffmpeg.org/)
+- [v4l2loopback](https://github.com/umlaeute/v4l2loopback)
+
+These should be available from your package manager.
 
 #### Installation Instructions
 
-> **Warning**
->
-> You will probably have to run the below commands with `sudo`! Remember to double check what commands are doing if you're copying them from the internet, **especially** if they want you to use root privileges!
->
-
-To get started, download the script to `/usr/local/bin/` (or somewhere else on your `$PATH`)
+**1. To get started, clone this repo somewhere**
 
 ```console
-$ curl -sSo /usr/local/bin/webcamize https://raw.githubusercontent.com/weebney/webcamize/v1.1.2/webcamize > /dev/null && echo 'Successfully downloaded!'
-Successfully downloaded!
+$ git clone https://github.com/weebney/webcamize
 ```
 
-Then, make the script executable with `chmod`
+**2. Link the script somewhere on your path**
+
+> [!WARNING]
+> You will probably have to run the command below with `sudo`! Remember to double check what commands are doing if you're copying them from the internet, **especially** if they want you to use root privileges!
 
 ```console
-$ chmod a+x -v /usr/local/bin/webcamize
-mode of '/usr/local/bin/webcamize' changed from 0644 (rw-r--r--) to 0755 (rwxr-xr-x)
+$ ln -s "$PWD/webcamize/webcamize" /usr/local/bin/
 ```
 
 **That's all; you're ready to go!** 🎉🎉
@@ -188,16 +188,18 @@ mode of '/usr/local/bin/webcamize' changed from 0644 (rw-r--r--) to 0755 (rwxr-x
 Give it a quick test just to make sure it's working:
 
 ```console
-$ webcamize -v
-webcamize: 1.1.2
+$ webcamize &
+$ ffplay /dev/video0
 ```
 
-... and here's everything again as a one-liner to reward those patient few who read all the way through the instructions before starting!
+To update webcamize, just run the following command from the webcamize git repo:
 
 ```console
-$ sudo bash -c "curl -sSo /usr/local/bin/webcamize https://raw.githubusercontent.com/weebney/webcamize/v1.1.2/webcamize && chmod a+x /usr/local/bin/webcamize" && echo -e '\n\e[32mSuccessfully installed webcamize!\e[0m'
-Successfully installed webcamize!
+git fetch --tags && git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
 ```
+
+It should upgrade you to the latest tagged version.
+
 <!--
 ### Package Managers
 
