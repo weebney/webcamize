@@ -264,6 +264,6 @@ This is just a little script I cooked up one afternoon—the software it depends
 
 <br>
 
-![GitHub Stars Over Time](https://starchart.cc/weebney/webcamize.svg)
+![](https://starchart.cc/weebney/webcamize.svg)
 
 ![](././assets/nightynight.svg)
