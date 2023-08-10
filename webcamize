@@ -152,22 +152,23 @@ fi
 # Verify that the loopback device exists
 if [ ! -e /dev/video"${device_number}" ]; then
 	warn "Could not find /dev/video%s" "${device_number}"
-
+	
+	# Unload v4l2loopback so we can add new devices
 	if lsmod | grep -q "v4l2loopback"; then
-		info "Attempting to reload v4l2loopback"
-		warn "Reloading v4l2loopback will disable in-use camera feeds"
+		warn "Reloading v4l2loopback; this will disable in-use camera feeds"
 		if ! sudo modprobe -r v4l2loopback; then
 			fatal "Error unloading v4l2loopback module"
 		fi
 	fi
 
 	info "Attempting to add /dev/video%s via modprobe" "${device_number}"
-
+	
+	# Add the required device
 	if ! sudo modprobe v4l2loopback video_nr="${device_number}" card_label="${camera_name} (webcamize)" exclusive_caps=1; then
 		fatal "Error loading v4l2loopback module"
 	fi
 
-	# Check that we actually created the device
+	# Verify that the device exists
 	if [ ! -e /dev/video"${device_number}" ]; then
 		fatal "Failed to added /dev/video%s" "${device_number}"
 	else
@@ -194,14 +195,12 @@ check_video_output() {
 			break
 		fi
 		prev_output=$current_output
-		sleep 0.
 	done
 }
-
 check_video_output &
 check_pid=$!
 
-# Manage pipeline
+# Manage pipeline errors
 wait $pipeline_pid
 pipeline_status=$?
 if [ $pipeline_status -ne 0 ]; then
