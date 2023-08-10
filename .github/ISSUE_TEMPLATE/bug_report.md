@@ -8,12 +8,15 @@ assignees: weebney
 ---
 
 Hey! Thanks for opening an issue, I really appreciate it. Follow the template below so I can help you as fast and efficiently as possible.
-Before submitting this issue, please check the supported devices list. If your device isn't on that list, please do not submit the issue.
+Before submitting this issue, please check the supported devices list. If your device isn't on that list, please do not submit the issue. If your device is not on the list but is a camera manufactured after 2016, you may also submit an issue.
 Supported devices: https://github.com/weebney/webcamize/blob/master/assets/supported.md
 
 Thanks,
 weebney
------
+
+Please remove everything above the dashes before submitting.
+
+---
 
 **Describe the bug**
 A clear and concise description of what the bug is.
