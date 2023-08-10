@@ -170,6 +170,26 @@ webcamize: Starting camera on /dev/video0
 
 </div>
 
+### Package Managers
+
+Webcamize is brand new and probably not available via your distribution's package manager (yet)—if you want to support the project by maintaining a package for webcamize, I'd be eternally grateful!
+
+#### Arch Linux (AUR)
+
+Webcamize is available from the [Arch User Repository](https://aur.archlinux.org/packages/webcamize) as `webcamize`
+
+```console
+$ yay -S webcamize
+```
+
+<!-- #### NixOS (Nixpkgs)
+
+Webcamize can be found in [Nixpkgs](https://aur.archlinux.org/packages/webcamize) as `webcamize`
+
+```console
+$ nix-env -iA webcamize
+``` -->
+
 ### Manual Installation
 
 Webcamize is super easy to install—it only has a few additional dependencies that you should make sure are installed before beginning:
@@ -215,20 +235,6 @@ $ git fetch --tags && git checkout $(git describe --tags $(git rev-list --tags -
 ```
 
 This should upgrade you to the latest tagged version.
-
-<!--
-### Package Managers
-
-Webcamize is brand new and probably not available via your distribution's package manager (yet)—if you want to support the project by maintaining a package for webcamize, I'd be eternally grateful!
-
-#### Arch Linux (AUR)
-
-Webcamize is available from the Arch User Repository as `webcamize`
-
-```console
-$ yay -S webcamize
-```
- -->
 
 <!-- -->
 
