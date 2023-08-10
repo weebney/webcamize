@@ -34,13 +34,13 @@ Webcamize allows you to use [basically any modern camera](./assets/supported.md)
 <br>
 <div align="center" width="33%">
 
-There's literally only three steps...
+There's literally only two steps...
 
-**1​. Plug in some camera**
+**1​. Plug in your camera**
 
 **2​. Run the `webcamize` command**
 
-**3​. Now your camera is a webcam!**
+Now your camera is a webcam! 🎉
 </div>
 
 It's really that easy! Webcamize is a tiny bash script that coordinates [gphoto2](http://gphoto.org/) and [ffmpeg](https://www.ffmpeg.org/) to capture video from any camera and output it to a live video device, ready to be used as a webcam. Whether it's for a Zoom meeting, a live streaming event, or a virtual conference, webcamize bridges the gap between high-end photography equipment and everyday tech usability. 
@@ -62,28 +62,12 @@ Webcamize is designed to be as easy to use as possible. Just plug in your camera
 
 ```console
 $ webcamize
-webcamize: Starting camera on /dev/video0
+[INFO] Starting camera on /dev/video0
 ```
 
 In the vast majority of cases, that's all you'll need to do. You might be asked to enter your password for `modprobe` to enable the video device.
 
-### Enabling Webcamize on Startup
-
-First, [install webcamize](#installation)! Then, you can make webcamize run by default on startup with a systemd unit file included in this repository. Start by downloading the unit file into your unit files folder:
-
-```console
-$ curl -sSo /etc/systemd/system/webcamize.service https://raw.githubusercontent.com/weebney/webcamize/v1.1.2/webcamize.service > /dev/null && echo 'Successfully downloaded!'
-Successfully downloaded!
-```
-
-Then, just enable it!
-
-```console
-$ systemctl enable webcamize
-Created symlink /etc/systemd/system/multi-user.target.wants/webcamize.service → /etc/systemd/system/webcamize.service.
-```
-
-Webcamize should now run in the background automatically when you start up your PC.
+[**View the list of supported cameras and devices**](./assets/supported.md).
 
 ### Advanced Usage
 
@@ -95,12 +79,13 @@ Usage: webcamize [OPTIONS...]
         -d, --device NUMBER             Specify the /dev/video device number to use (default: 0)
         -g, --gphoto-args ARGS          Pass arguments to gphoto2 (default: "autofocusdrive=1")
         -f, --ffmpeg-args ARGS          Pass arguments to ffmpeg (default: "-vcodec rawvideo -pix_fmt yuv420p -threads 0")
+        -l, --log-level LEVEL           Set the log level (INFO, WARN, FATAL; default: INFO)
         -h, --help                      Show this help message
 ```
 
 #### Choosing a Different Camera
 
-If you have multiple cameras gphoto2 compatible connected and available, you can specify the camera you want to use with the `--camera` flag. You can list the available cameras by running the following command:
+If you have multiple gphoto2 compatible cameras that are connected and available, you can specify the camera you want to use with the `--camera` flag. You can list the available cameras by running the following command:
 
 ```console
 $ gphoto2 --summary | grep Model:
@@ -112,9 +97,8 @@ Once you know the name of the camera you want to use, just pass it to the `--cam
 
 ```console
 $ webcamize --camera "Sony Alpha-A7r III"
-webcamize: Starting Sony Alpha-A7r III on /dev/video0
+[INFO] Starting Sony Alpha-A7r III on /dev/video0
 ```
-
 
 #### Setting a Different Video Device
 
@@ -122,19 +106,49 @@ Want to use your camera as a webcam on `/dev/video4` instead of the default `/de
 
 ```console
 $ webcamize --device 4
-webcamize: Starting camera on /dev/video4
+[INFO] Starting camera on /dev/video4
 ```
 
 #### Multi-Camera Setup
 
-Alright mister show biz, here's how you can do a multiple camera setup; just chain together the `--device` and `--camera` flags to route multiple cameras into multiple video devices.
+Alright mister show biz, here's how you can do a multiple camera setup; first, unload the v4l2loopback module and reload it for a multi-camera setup. The demo below suggests a three camera setup.
 
 ```console
-$ webcamize --device 4 --camera "Canon EOS 80D" &
-webcamize: Starting Canon EOS 80D on /dev/video4
-$ webcamize --device 3 --camera "Sony Alpha-A7r III" &
-webcamize: Starting Sony Alpha-A7r III on /dev/video3
+$ modprobe -r v4l2loopback
+$ modprobe v4l2loopback devices=3 video_nr=2,3,4 card_label="Canon EOS 80D,Sony Alpha-A7r III,Nikon Z8" exclusive_caps=1,1,1
 ```
+
+Once that's done, just chain together the `--device` and `--camera` flags to route multiple cameras into the multiple video devices you just created.
+
+```console
+$ webcamize --device 2 --camera "Canon EOS 80D" &
+[INFO] Starting Canon EOS 80D on /dev/video4
+$ webcamize --device 3 --camera "Sony Alpha-A7r III" &
+[INFO] Starting Sony Alpha-A7r III on /dev/video3
+$ webcamize --device 4 --camera "Nikon Z8" &
+[INFO] Starting Nikon Z8 on /dev/video2
+```
+
+If you want to learn more about how to configure the v4l2loopback module, refer to the [Arch Linux wiki](https://wiki.archlinux.org/title/V4l2loopback).
+
+### Enabling Webcamize on Startup
+
+First, [install webcamize](#installation)! Then, you can make webcamize run by default on startup with a systemd unit file included in the git repository; all you need to do is symlink it to your system services folder.
+
+From the webcamize repository:
+
+```console
+$ ln -s "$PWD/webcamize.service" /etc/systemd/system/
+```
+
+Then, just enable it!
+
+```console
+$ systemctl enable webcamize
+Created symlink /etc/systemd/system/multi-user.target.wants/webcamize.service → /etc/systemd/system/webcamize.service.
+```
+
+Webcamize should now run in the background automatically when you start up your PC.
 
 #### Custom Arguments for gphoto2/ffmpeg
 
@@ -171,7 +185,7 @@ These should be available from your package manager.
 **1. To get started, clone this repo somewhere**
 
 ```console
-$ git clone https://github.com/weebney/webcamize
+$ git clone https://github.com/weebney/webcamize && cd webcamize
 ```
 
 **2. Link the script somewhere on your path**
@@ -180,7 +194,7 @@ $ git clone https://github.com/weebney/webcamize
 > You will probably have to run the command below with `sudo`! Remember to double check what commands are doing if you're copying them from the internet, **especially** if they want you to use root privileges!
 
 ```console
-$ ln -s "$PWD/webcamize/webcamize" /usr/local/bin/
+$ ln -s "$PWD/webcamize" /usr/local/bin/
 ```
 
 **That's all; you're ready to go!** 🎉🎉
@@ -192,13 +206,15 @@ $ webcamize &
 $ ffplay /dev/video0
 ```
 
+#### Updating Webcamize
+
 To update webcamize, just run the following command from the webcamize git repo:
 
 ```console
-git fetch --tags && git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
+$ git fetch --tags && git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
 ```
 
-It should upgrade you to the latest tagged version.
+This should upgrade you to the latest tagged version.
 
 <!--
 ### Package Managers
@@ -243,8 +259,6 @@ Webcamize has only a few contribution rules to keep the project's growing at a s
 - Please squash your commits before submitting a pull request.
 - Pull requests should be split into multiple pull requests where possible.
 
-
-
 <div align="center">
 <br>
 
@@ -256,10 +270,10 @@ Webcamize has only a few contribution rules to keep the project's growing at a s
 
 <br>
 
-This is just a little script I cooked up one afternoon—the software it depends on is where the real magic happens. I know it can be corny, but I do feel it's important that we remind ourselves that we stand on the shoulders of giants. With that being said, a big thanks goes out from me to:
+This is just a little script I cooked up one afternoon—the software it depends on is where the real magic happens. It's important that we remind ourselves that we stand on the shoulders of giants; with that being said, a big thanks goes out from me to:
 
 - [Michael Niedermayer](https://github.com/michaelni) and all other contributors to [ffmpeg](https://github.com/FFmpeg/FFmpeg/graphs/contributors) for their incredible work on the absolute behemoth and marvel of software that is ffmpeg.
-- [Marcus Meissner](https://github.com/msmeissn),  [Hans Niedermann](https://github.com/ndim), and the other contributors to [gphoto2](https://github.com/gphoto/gphoto2) and [libgphoto2](https://github.com/gphoto/libgphoto2). This project is pretty small and obscure compared to how powerful and well constructed it is. Definitely check it out!
+- [Marcus Meissner](https://github.com/msmeissn),  [Hans Niedermann](https://github.com/ndim), and the other contributors to [gphoto2](https://github.com/gphoto/gphoto2) and [libgphoto2](https://github.com/gphoto/libgphoto2). This project is quite obscure given the insane quality and scope—it has the polish of a project with significantly more steam behind it. Definitely check it out!
 - [You](https://en.wikipedia.org/wiki/You_(Time_Person_of_the_Year)), the reader! Thank you for using, supporting, and contributing to webcamize; without you, this project would not be possible.
 
 <br>
