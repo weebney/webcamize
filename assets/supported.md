@@ -3796,10 +3796,6 @@ Press <kbd>Ctrl</kbd> + <kbd>F</kbd> to search.
 <td> </td>
 </tr>
 <tr>
-<td>Nikon DSC D40</td>
-<td>PTP Mode</td>
-</tr>
-<tr>
 <td>Nikon DSC D40x</td>
 <td>PTP Mode</td>
 </tr>
