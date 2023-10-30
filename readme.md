@@ -278,7 +278,7 @@ Webcamize has only a few contribution rules to keep the project's growing at a s
 
 This is just a little script I cooked up one afternoon—the software it depends on is where the real magic happens. It's important that we remind ourselves that we stand on the shoulders of giants; with that being said, a big thanks goes out from me to:
 
-- [Michael Niedermayer](https://github.com/michaelni) and all other contributors to [ffmpeg](https://github.com/FFmpeg/FFmpeg/graphs/contributors) for their incredible work on the absolute behemoth and marvel of software that is ffmpeg.
+- [Michael Niedermayer](https://github.com/michaelni) and all other contributors to [ffmpeg](https://github.com/FFmpeg/FFmpeg/graphs/contributors) for their incredible work on the absolute behemoth that is ffmpeg.
 - [Marcus Meissner](https://github.com/msmeissn),  [Hans Niedermann](https://github.com/ndim), and the other contributors to [gphoto2](https://github.com/gphoto/gphoto2) and [libgphoto2](https://github.com/gphoto/libgphoto2). This project is quite obscure given the insane quality and scope—it has the polish of a project with significantly more steam behind it. Definitely check it out!
 - [You](https://en.wikipedia.org/wiki/You_(Time_Person_of_the_Year)), the reader! Thank you for using, supporting, and contributing to webcamize; without you, this project would not be possible.
 
