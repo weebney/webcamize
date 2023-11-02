@@ -5224,10 +5224,6 @@ Press <kbd>Ctrl</kbd> + <kbd>F</kbd> to search.
 <td>PTP Mode</td>
 </tr>
 <tr>
-<td>Sony DSC-H2</td>
-<td>PTP Mode</td>
-</tr>
-<tr>
 <td>Sony DSC-H5</td>
 <td>PTP Mode</td>
 </tr>
