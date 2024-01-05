@@ -131,6 +131,15 @@ $ webcamize --device 4 --camera "Nikon Z8" &
 
 If you want to learn more about how to configure the v4l2loopback module, refer to the [Arch Linux wiki](https://wiki.archlinux.org/title/V4l2loopback).
 
+#### Custom Arguments for gphoto2/ffmpeg
+
+Unless you're really familiar with gphoto2/ffmpeg, it's inadvisable to pass custom arguments with the `--gphoto-args` and `--ffmpeg-args` flags; all these flags do is pass arguments into their respective command. As an example, here's the default flags for ffmpeg but edited to have a different thread count:
+
+```console
+$ webcamize --ffmpeg-args "-vcodec rawvideo -pix_fmt yuv420p -threads 2"
+webcamize: Starting camera on /dev/video0
+```
+
 ### Enabling Webcamize on Startup
 
 First, [install webcamize](#installation)! Then, you can make webcamize run by default on startup with a systemd unit file included in the git repository; all you need to do is symlink it to your system services folder.
@@ -149,15 +158,6 @@ Created symlink /etc/systemd/system/multi-user.target.wants/webcamize.service â†
 ```
 
 Webcamize should now run in the background automatically when you start up your PC.
-
-#### Custom Arguments for gphoto2/ffmpeg
-
-Unless you're really familiar with gphoto2/ffmpeg, it's inadvisable to pass custom arguments with the `--gphoto-args` and `--ffmpeg-args` flags; all these flags do is pass arguments into their respective command. As an example, here's the default flags for ffmpeg but edited to have a different thread count:
-
-```console
-$ webcamize --ffmpeg-args "-vcodec rawvideo -pix_fmt yuv420p -threads 2"
-webcamize: Starting camera on /dev/video0
-```
 
 <!-- -->
 
