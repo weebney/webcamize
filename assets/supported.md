@@ -1,7 +1,5 @@
 # Supported Devices
 
-With support for over 1,400 devices, Webcamize offers unmatched versatility, making it easier than ever for users to enhance their video quality and broaden the possibilities of their existing hardware. 
-
 Press <kbd>Ctrl</kbd> + <kbd>F</kbd> to search.
 
 > [!IMPORTANT]
