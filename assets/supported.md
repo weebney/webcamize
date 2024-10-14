@@ -1,7 +1,5 @@
 # Supported Devices
 
-Press <kbd>Ctrl</kbd> + <kbd>F</kbd> to search.
-
 > [!IMPORTANT]
 > This list is not comprehensive—please note that some cameras on this list might not work, and some not on this list will work.
 
